@@ -1,81 +1,82 @@
-import os
 import requests
-from dotenv import load_dotenv
+import pandas as pd
 
-load_dotenv()
+latitude = 43.451476
+longitude = -116.244376
 
-api_key = os.getenv("NASS_API_KEY")
+url = "https://archive-api.open-meteo.com/v1/archive"
 
-if not api_key:
-    raise ValueError("NASS_API_KEY not found")
+params = {
+    "latitude": latitude,
+    "longitude": longitude,
+    "start_date": "2000-01-01",
+    "end_date": "2023-12-31",
+    "daily": [
+        "temperature_2m_mean",
+        "temperature_2m_max",
+        "temperature_2m_min",
+        "precipitation_sum",
+        "shortwave_radiation_sum",
+        "et0_fao_evapotranspiration",
+        "soil_moisture_0_to_7cm_mean"
+    ],
+    "timezone": "auto"
+}
 
-url = "https://quickstats.nass.usda.gov/api/api_GET/"
+response = requests.get(url, params=params)
 
-special_records = []
+print("Status code:", response.status_code)
 
-for year in range(2000, 2024):
+if response.status_code == 200:
+    data = response.json()
 
-    params = {
-        "key": api_key,
-        "commodity_desc": "WHEAT",
-        "state_alpha": "ID",
-        "agg_level_desc": "COUNTY",
-        "year": str(year),
-        "freq_desc": "ANNUAL",
-        "statisticcat_desc": "YIELD",
-        "class_desc": "SPRING, (EXCL DURUM)",
-        "prodn_practice_desc": "ALL PRODUCTION PRACTICES",
-        "unit_desc": "BU / ACRE",
-        "format": "JSON"
-    }
+    weather_df = pd.DataFrame(data["daily"])
 
-    response = requests.get(url, params=params)
+    weather_df["time"] = pd.to_datetime(weather_df["time"])
 
-    if response.status_code == 200:
+    weather_df["year"] = weather_df["time"].dt.year
+    weather_df["month"] = weather_df["time"].dt.month
 
-        data = response.json()
-        records = data.get("data", [])
+    growing_season = weather_df[
+        weather_df["month"].between(4, 9)
+    ].copy()
 
-        for record in records:
-            if not record["county_ansi"]:
-                special_records.append(record)
+    growing_season["hot_day"] = (
+        growing_season["temperature_2m_max"] >= 30
+    ).astype(int)
 
-        print(
-            year,
-            "| records checked:",
-            len(records)
+    yearly_weather = (
+        growing_season
+        .groupby("year")
+        .agg(
+            temp_mean_c=("temperature_2m_mean", "mean"),
+            temp_max_c=("temperature_2m_max", "max"),
+            temp_min_c=("temperature_2m_min", "min"),
+            precip_total_mm=("precipitation_sum", "sum"),
+            solar_radiation_total=("shortwave_radiation_sum", "sum"),
+            et0_total_mm=("et0_fao_evapotranspiration", "sum"),
+            soil_moisture_mean=("soil_moisture_0_to_7cm_mean", "mean"),
+            hot_days_30c=("hot_day", "sum"),
+            season_days=("time", "count")
         )
-
-    else:
-        print(
-            year,
-            "| request failed:",
-            response.status_code
-        )
-
-print("\nRecords without county ANSI:", len(special_records))
-
-special_county_names = set(
-    record["county_name"]
-    for record in special_records
-)
-
-print("\nSpecial county names:")
-
-for county in sorted(special_county_names):
-    print(county)
-
-print("\nExample special records:")
-
-for record in special_records[:10]:
-    print(
-        record["year"],
-        "|",
-        record["county_name"],
-        "| county_code:",
-        record["county_code"],
-        "| county_ansi:",
-        record["county_ansi"],
-        "| value:",
-        record["Value"]
+        .reset_index()
     )
+
+    yearly_weather.insert(1, "county_name", "ADA")
+    yearly_weather.insert(2, "county_fips", "16001")
+
+    print("\nDaily records downloaded:", len(weather_df))
+    print("Growing-season daily records:", len(growing_season))
+
+    print("\nYearly weather shape:")
+    print(yearly_weather.shape)
+
+    print("\nYearly weather:")
+    print(yearly_weather.to_string(index=False))
+
+    print("\nMissing values:")
+    print(yearly_weather.isna().sum())
+
+else:
+    print("Request failed")
+    print(response.text)
