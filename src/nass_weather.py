@@ -6,7 +6,7 @@ yield_df = pd.read_csv(
 )
 
 weather_df = pd.read_csv(
-    "data/processed/open_meteo_growing_season_weather.csv",
+    "data/processed/weather_seasonal.csv",
     dtype={"county_fips": str}
 )
 
