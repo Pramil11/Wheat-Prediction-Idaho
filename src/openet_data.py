@@ -18,7 +18,7 @@ if not api_key:
     raise ValueError("OPENET_API_KEY not found")
 
 yield_df = pd.read_csv(
-    "data/processed/nass_weather_2020_2023.csv",
+    "data/processed/nass_weather.csv",
     dtype={"county_fips": str}
 )
 
@@ -322,7 +322,7 @@ print(
 )
 
 openet_raw.to_csv(
-    "data/raw/openet_monthly_2020_2023.csv",
+    "data/raw/openet_monthly.csv",
     index=False
 )
 
@@ -442,16 +442,16 @@ print(
 )
 
 openet_processed.to_csv(
-    "data/processed/openet_growing_season_2020_2023.csv",
+    "data/processed/openet_seasonal.csv",
     index=False
 )
 
 print(
     "\nRaw OpenET data saved to:",
-    "data/raw/openet_monthly_2020_2023.csv"
+    "data/raw/openet_monthly.csv"
 )
 
 print(
     "Processed OpenET data saved to:",
-    "data/processed/openet_growing_season_2020_2023.csv"
+    "data/processed/openet_seasonal.csv"
 )

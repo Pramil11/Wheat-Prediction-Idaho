@@ -1,12 +1,12 @@
 import pandas as pd
 
 nass_weather_df = pd.read_csv(
-    "data/processed/nass_weather_2020_2023.csv",
+    "data/processed/nass_weather.csv",
     dtype={"county_fips": str}
 )
 
 openet_df = pd.read_csv(
-    "data/processed/openet_growing_season_2020_2023.csv",
+    "data/processed/openet_seasonal.csv",
     dtype={"county_fips": str}
 )
 
@@ -120,13 +120,14 @@ final_df = final_df.sort_values(
 
 output_path = (
     "data/processed/"
-    "idaho_spring_wheat_final_2020_2023.csv"
+    "final_dataset.csv"
 )
 
 final_df.to_csv(
     output_path,
     index=False
 )
+
 
 print("\nFinal integrated dataset shape:")
 print(final_df.shape)

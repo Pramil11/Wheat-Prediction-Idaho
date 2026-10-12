@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 
 yield_df = pd.read_csv(
-    "data/processed/nass_spring_wheat_yield_clean.csv",
+    "data/processed/nass_yield.csv",
     dtype={"county_fips": str}
 )
 
@@ -159,7 +159,7 @@ print("\nRaw weather missing values:")
 print(weather_raw.isna().sum())
 
 weather_raw.to_csv(
-    "data/raw/open_meteo_daily_weather.csv",
+    "data/raw/weather_daily.csv",
     index=False
 )
 
@@ -258,11 +258,11 @@ print(
 )
 
 weather_processed.to_csv(
-    "data/processed/open_meteo_growing_season_weather.csv",
+    "data/processed/weather_seasonal.csv",
     index=False
 )
 
 print(
     "\nProcessed weather saved to:",
-    "data/processed/open_meteo_growing_season_weather.csv"
+    "data/processed/weather_seasonal.csv"
 )

@@ -65,7 +65,7 @@ print("\nRaw DataFrame shape:", df.shape)
 os.makedirs("data/raw", exist_ok=True)
 os.makedirs("data/processed", exist_ok=True)
 
-raw_file_path = "data/raw/nass_spring_wheat_yield_raw.csv"
+raw_file_path = "data/raw/nass_raw.csv"
 
 df.to_csv(
     raw_file_path,
@@ -206,7 +206,7 @@ print("Upper outlier boundary:", upper_bound)
 
 print("\nNumber of statistical outliers:", len(outliers))
 
-processed_file_path = "data/processed/nass_spring_wheat_yield_clean.csv"
+processed_file_path = "data/processed/nass_yield.csv"
 
 yield_df.to_csv(
     processed_file_path,

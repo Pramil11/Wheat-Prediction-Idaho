@@ -1,7 +1,7 @@
 import pandas as pd
 
 yield_df = pd.read_csv(
-    "data/processed/nass_spring_wheat_yield_clean.csv",
+    "data/processed/nass_yield.csv",
     dtype={"county_fips": str}
 )
 
