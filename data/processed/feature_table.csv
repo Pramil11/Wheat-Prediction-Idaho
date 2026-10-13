@@ -1,0 +1,22 @@
+Feature / Description,Variable Type,Missing Data,Outliers / Nonsense
+year - Calendar year of the wheat-growing season,"Numeric, discrete",0,None
+county_name - Idaho county name,"Categorical, nominal",0,None
+county_fips - Five-digit county identifier,Categorical identifier,0,None
+asd_desc - USDA agricultural statistics district,"Categorical, nominal",0,None
+yield_bu_acre - Spring wheat yield in bushels per acre; outcome variable,"Numeric, continuous",0,No IQR outliers; no invalid values
+unit_desc - Unit used for wheat yield,"Categorical, constant",0,None; all values are BU / ACRE
+cv_percent - USDA coefficient of variation for the yield estimate,"Numeric, continuous",0,5 IQR outliers; no invalid values
+temp_mean_c - Mean April-September air temperature,"Numeric, continuous",0,No IQR outliers; no invalid values
+temp_max_c - Highest daily maximum temperature during the season,"Numeric, continuous",0,No IQR outliers; no invalid values
+temp_min_c - Lowest daily minimum temperature during the season,"Numeric, continuous",0,No IQR outliers; no invalid values
+precip_total_mm - Total April-September precipitation,"Numeric, continuous",0,3 high IQR outliers; physically plausible
+solar_radiation_total - Total growing-season shortwave solar radiation,"Numeric, continuous",0,5 low IQR outliers; physically plausible
+et0_total_mm - Total reference evapotranspiration from Open-Meteo,"Numeric, continuous",0,No IQR outliers; no invalid values
+soil_moisture_mean - Mean 0-7 cm soil moisture during the growing season,"Numeric, continuous",0,No IQR outliers; all values between 0 and 1
+hot_days_30c - Number of days with maximum temperature >= 30 C,"Numeric, discrete count",0,No IQR outliers; all counts valid
+season_days - Number of days included in the April-September weather window,"Numeric, discrete count",0,None; all values equal 183
+actual_et_mm - April-September actual evapotranspiration from OpenET,"Numeric, continuous",0,No IQR outliers; no invalid values
+openet_months - Number of OpenET months included,"Numeric, discrete count",0,None; all values equal 6
+valid_et_months - Number of valid OpenET monthly ET values,"Numeric, discrete count",0,None; all values equal 6
+openet_point_latitude - Latitude used for the OpenET county representative point,Numeric coordinate,0,No invalid coordinate values
+openet_point_longitude - Longitude used for the OpenET county representative point,Numeric coordinate,0,No invalid coordinate values
